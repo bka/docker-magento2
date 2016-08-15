@@ -1,0 +1,16 @@
+php:
+  build: Docker/php/
+  ports:
+    - 8123:80
+  links:
+    - mysql
+  volumes:
+    - ./Source:/var/www/html
+
+mysql:
+  build: Docker/mysql/
+  environment:
+    - MYSQL_ROOT_PASSWORD=magento2
+    - MYSQL_DATABASE=magento2
+    - MYSQL_USER=magento2
+    - MYSQL_PASSWORD=magento2
