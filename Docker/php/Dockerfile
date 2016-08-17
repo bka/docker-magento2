@@ -23,3 +23,5 @@ RUN docker-php-ext-install -j$(nproc) intl
 RUN docker-php-ext-install -j$(nproc) mcrypt
 
 RUN docker-php-ext-install -j$(nproc) pdo_mysql
+
+RUN a2enmod rewrite
