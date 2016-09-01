@@ -25,3 +25,5 @@ RUN docker-php-ext-install -j$(nproc) mcrypt
 RUN docker-php-ext-install -j$(nproc) pdo_mysql
 
 RUN a2enmod rewrite
+
+RUN apt-get install -y mysql-client

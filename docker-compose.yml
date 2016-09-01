@@ -13,3 +13,11 @@ mysql:
   build: Docker/mysql/
   env_file:
     - docker-env.yml
+varnish:
+  build: Docker/varnish
+  links:
+    - php
+  ports:
+    - 8181:80
+  env_file:
+    - docker-env.yml
