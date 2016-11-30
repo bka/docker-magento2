@@ -1,23 +1,42 @@
-php:
-  build: Docker/php/
-  ports:
-    - 8123:80
-  links:
-    - mysql
-  volumes:
-    - ./Source:/var/www/html
-  env_file:
-    - docker-env.yml
+version: '2'
 
-mysql:
-  build: Docker/mysql/
-  env_file:
-    - docker-env.yml
-varnish:
-  build: Docker/varnish
-  links:
-    - php
-  ports:
-    - 8181:80
-  env_file:
-    - docker-env.yml
+# add nameserver 172.17.0.1 to
+# /etc/resolvconf/resolv.conf.d/head
+# $ sudo resolvconf -u
+
+services:
+  dnsdock:
+    # use this one instead of tonistiigi/dnsdock
+    # https://github.com/aacebedo/dnsdock/issues/59
+    image: aacebedo/dnsdock:1.12.1
+    container_name: dnsdock
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 172.17.0.1:53:53/udp
+    environment:
+        - DOMAIN=dev
+  php:
+    build: Docker/php/
+    links:
+      - mysql
+    volumes:
+      - ./Source:/var/www/html
+    env_file:
+      - docker-env.yml
+    environment:
+        - DNSDOCK_ALIAS=magento.dev
+  mysql:
+    build: Docker/mysql/
+    env_file:
+      - docker-env.yml
+    environment:
+        - DNSDOCK_ALIAS=mysql.dev
+  varnish:
+    build: Docker/varnish
+    links:
+      - php
+    env_file:
+      - docker-env.yml
+    environment:
+        - DNSDOCK_ALIAS=shop.dev
